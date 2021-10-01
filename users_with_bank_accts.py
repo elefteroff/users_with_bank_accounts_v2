@@ -37,26 +37,34 @@ class User:
         self.email = email
         self.acct = {
             "Checking" : BankAccount(amount),
-            "Savings" : BankAccount(amount)
+            "Savings" : BankAccount(0)
         }
+
+    def create_acct(self, acct_name):
+        new_acct = BankAccount(0)
+        self.acct[acct_name] = new_acct
+        return self
 
     def display_user_balance(self):
         print(f"Name: {self.name}, Account: 'Checking', Balance: ${self.acct['Checking'].balance}")
         print(f"Name: {self.name}, Account: 'Savings', Balance: ${self.acct['Savings'].balance}")
 
-    def transfer_money(self, other_user, amount):
-        self.acct['Checking'].balance -= amount
-        other_user.acct['Checking'].balance += amount
-        self.acct['Savings'].balance -= amount
-        other_user.acct['Savings'].balance += amount
+    def transfer_money(self, other_user, acct, amount):
+        if acct == "Checking":
+            self.acct['Checking'].balance -= amount
+            other_user.acct['Checking'].balance += amount
+        else: 
+            self.acct['Savings'].balance -= amount
+            other_user.acct['Savings'].balance += amount
         return self
 
 User1 = User("James Bond", "jb@email.com", 1000000)
 User2 = User("John Wick", "jw@email.com", 5000000)
 User3 = User("Jack Ryan", "jr@email.com", 250000)
 
-User1.acct['Savings'].deposit(500000).withdraw(250000).yield_interest()
+User1.acct['Savings'].deposit(500000)
 User1.display_user_balance()
 
-User1.transfer_money(User2, 250000)
+User1.transfer_money(User2, "Savings", 250000)
 User2.display_user_balance()
+User1.create_acct("Emergency Funds")
